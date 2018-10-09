@@ -32,8 +32,8 @@ func log(message interface{}) {
 	pc, file, line, _ := runtime.Caller(1)
 
 	f := runtime.FuncForPC(pc).Name()
-	now := time.Now().Format("15:04:05.000")
-	date := time.Now().Format("2018-10-09")
+	now := time.Now().In(cstZone).Format("15:04:05")
+	date := time.Now().In(cstZone).Format("2018-10-09")
 
 	str := fmt.Sprintf("%s %s:%d [%s]: %v", now, file, line, f, message)
 
