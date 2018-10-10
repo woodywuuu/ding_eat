@@ -21,10 +21,10 @@ var token string
 type dingMsg struct {
 	MsgType string `json:"msgtype"`
 	Text    struct {
-		content string
+		Content string `json:"content"`
 	} `json:"text"`
 	At struct {
-		isAtAll int
+		IsAtAll int `json:"isAtAll"`
 	} `json:"at"`
 }
 
@@ -107,10 +107,11 @@ func make_msg(weekday, msg string) string {
 
 func send_msg(msg string) {
 	var dingmsg dingMsg
-	dingmsg.At.isAtAll = 1
+	dingmsg.At.IsAtAll = 1
 	dingmsg.MsgType = "text"
-	dingmsg.Text.content = msg
+	dingmsg.Text.Content = msg
 	JsonMsg, err := json.Marshal(dingmsg)
+	log(fmt.Sprintf("json已生成:%s", JsonMsg))
 	if err != nil {
 		log(err)
 		os.Exit(1)
