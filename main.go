@@ -15,6 +15,7 @@ import (
 )
 
 const filename = "data.csv"
+
 var cstZone = time.FixedZone("UTC", 8*3600) // 东八
 var token string
 
@@ -33,13 +34,13 @@ func log(message interface{}) {
 
 	f := runtime.FuncForPC(pc).Name()
 	now := time.Now().In(cstZone).Format("15:04:05")
-	date := time.Now().In(cstZone).Format("2018-10-09")
+	t := time.Now().In(cstZone)
 
 	str := fmt.Sprintf("%s %s:%d [%s]: %v", now, file, line, f, message)
 
 	fmt.Println(str)
 
-	fname := fmt.Sprintf("ding_eat_%s.log", date)
+	fname := fmt.Sprintf("ding_eat_%d-%02d-%02d.log", t.Year(), t.Month(), t.Day())
 	logfile, err := os.OpenFile(fname, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0644)
 	defer logfile.Close()
 	if err != nil {
@@ -87,6 +88,10 @@ func get_message(name string) (string, string) {
 				os.Exit(1)
 			}
 		}
+	}
+	if weekday == "" || msg == "" {
+		log(fmt.Sprintf("当日无需发送"))
+		os.Exit(1)
 	}
 	return weekday, msg
 }
@@ -138,6 +143,10 @@ func send_msg(msg string) {
 func init() {
 	flag.StringVar(&token, "t", "", "token when u create a robot in dingtalk")
 	flag.Parse()
+	if token == "" {
+		log("无token输入")
+		os.Exit(1)
+	}
 	log(fmt.Sprintf("初始化完成，获取token为：%s", token))
 }
 
